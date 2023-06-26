@@ -1,6 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import cards, projects
+
+from app import models
+from app.dependencies.database import engine
+
+from app.routes import cards, projects
+
+# TODO: Implemetar correctamente con alembic y borrar
+models.Base.metadata.create_all(engine)
 
 
 app = FastAPI(
