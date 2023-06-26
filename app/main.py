@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from .routes import cards, projects
+
 
 app = FastAPI(
     title="PomoWork",
@@ -19,6 +21,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(cards.router)
+app.include_router(projects.router)
 
 
 @app.get("/")
