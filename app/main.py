@@ -7,6 +7,14 @@ from app.routes import cards, projects
 app = FastAPI(
     title="PomoWork",
     description="Una app para controlar pomodoros y cobros en distintos proyectos",
+    version="alpha-0.0.1",
+    contact={
+        "name": "Gustavo de los Santos",
+        "email": "gusleo94@gmail.com"
+    },
+    license_info={
+        "name": "MIT",
+    }
 )
 
 origins = [
