@@ -15,4 +15,3 @@ class ProjectModel(Base):
     price_per_hour = Column(Float, nullable=True)
 
     cards = relationship("CardModel")
-    pomodoro = relationship("PomoTimerModel", back_populates="project")
