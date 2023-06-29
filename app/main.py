@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import cards, projects, extra
+from app.routes import cards, projects
 
 
 app = FastAPI(
@@ -33,7 +33,6 @@ app.add_middleware(
 
 app.include_router(cards.router)
 app.include_router(projects.router)
-app.include_router(extra.router)
 
 
 @app.get("/")
