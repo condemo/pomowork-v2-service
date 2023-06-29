@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import Optional
 
 from app.schemas.cards import CardResponse
-from app.schemas.pomodoros import PomodoroResponse
 
 
 class ProjectCreate(BaseModel):
@@ -20,7 +19,6 @@ class ProjectUpdate(ProjectCreate):
 class ProjectResponse(ProjectCreate):
     id: int
     cards: list[CardResponse]
-    pomodoro: PomodoroResponse
 
     class Config:
         orm_mode = True
