@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
+from datetime import date
 
 
 class CardCreate(BaseModel):
@@ -17,7 +17,7 @@ class CardUpdate(CardCreate):
 
 class CardResponse(CardCreate):
     id: int
-    created_at: datetime.time
+    created_at: date
 
     class Config:
         orm_mode = True
