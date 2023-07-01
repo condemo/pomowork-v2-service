@@ -11,8 +11,12 @@ class CardCreate(BaseModel):
     collected: Optional[bool] = False
 
 
-class CardUpdate(CardCreate):
+class CardUpdate(BaseModel):
     id: int
+    pomo_count: Optional[int] = 0
+    price_per_hour: Optional[float] = None
+    total_price: Optional[float] = None
+    collected: Optional[bool] = False
 
 
 class CardResponse(CardCreate):
