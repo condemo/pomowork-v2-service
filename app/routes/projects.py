@@ -1,3 +1,4 @@
+from app.schemas.projects import ProjectUpdate
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
@@ -18,6 +19,13 @@ async def get_all_projects(db: Session = Depends(get_db)):
     return projects_list
 
 
+@router.get("/{id}", response_model=ProjectResponse)
+async def get_one_project(id: int, db: Session = Depends(get_db)):
+    project = db.query(ProjectModel).filter(ProjectModel.id == id).first()
+
+    return project
+
+
 @router.post("/", status_code=status.HTTP_201_CREATED,
              response_model=ProjectResponse)
 async def create_project(project: ProjectCreate,
@@ -26,6 +34,27 @@ async def create_project(project: ProjectCreate,
     db.add(new_project)
     db.commit()
     db.refresh(new_project)
-    print(new_project.id)
 
     return new_project
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_project(id: int, db: Session = Depends(get_db)):
+    query = db.query(ProjectModel).filter(ProjectModel.id == id)
+
+    query.delete(synchronize_session=False)
+    db.commit()
+
+    return
+
+
+@router.put("/", response_model=ProjectResponse)
+async def update_project(project: ProjectUpdate, db: Session = Depends(get_db)):
+    query = db.query(ProjectModel).filter(ProjectModel.id == project.id)
+    # TODO: Descomentar para gestionar errores
+    # project_updated = query.first()
+
+    query.update(project.dict(), synchronize_session=False)
+    db.commit()
+
+    return query.first()
