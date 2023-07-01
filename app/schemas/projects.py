@@ -13,7 +13,7 @@ class ProjectCreate(BaseModel):
 
 
 class ProjectUpdate(ProjectCreate):
-    pass
+    id: int
 
 
 class ProjectResponse(ProjectCreate):
