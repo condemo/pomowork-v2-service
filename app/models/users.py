@@ -1,4 +1,3 @@
-
 from sqlalchemy import Column, Integer, String
 from app.dependencies.database import Base
 
