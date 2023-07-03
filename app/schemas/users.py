@@ -7,8 +7,10 @@ class UserCreate(BaseModel):
     email: EmailStr
 
 
-class UserResponse(UserCreate):
+class UserResponse(BaseModel):
     id: int
+    username: str
+    email: EmailStr
 
     class Config:
         orm_mode = True
