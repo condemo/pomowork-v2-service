@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.dependencies.database import get_db
+from app.dependencies.oauth2 import get_current_user
 from app.models.cards import CardModel
 from app.schemas.cards import CardResponse, CardCreate, CardUpdate
 
@@ -13,21 +14,24 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[CardResponse])
-async def get_all_cards(db: Session = Depends(get_db)):
+async def get_all_cards(db: Session = Depends(get_db),
+                        current_user: str = Depends(get_current_user)):
     card_list = db.query(CardModel).all()
 
     return card_list
 
 
 @router.get("/{projectid}", response_model=list[CardResponse])
-async def get_project_card(projectid: int, db: Session = Depends(get_db)):
+async def get_project_card(projectid: int, db: Session = Depends(get_db),
+                           current_user: str = Depends(get_current_user)):
     card_list = db.query(CardModel).filter(CardModel.project_id == projectid).all()
 
     return card_list
 
 
 @router.post("/", response_model=CardResponse)
-async def create_card(card: CardCreate, db: Session = Depends(get_db)):
+async def create_card(card: CardCreate, db: Session = Depends(get_db),
+                      current_user: str = Depends(get_current_user)):
     new_card = CardModel(**card.dict())
     db.add(new_card)
     db.commit()
@@ -37,7 +41,8 @@ async def create_card(card: CardCreate, db: Session = Depends(get_db)):
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_card(id: int, db: Session = Depends(get_db)):
+async def delete_card(id: int, db: Session = Depends(get_db),
+                      current_user: str = Depends(get_current_user)):
     query = db.query(CardModel).filter(CardModel.id == id)
     # TODO: Descomentar para implementar sistema de errores
     # card = query.first()
@@ -49,7 +54,8 @@ async def delete_card(id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/", response_model=CardResponse)
-async def update_card(card: CardUpdate, db: Session = Depends(get_db)):
+async def update_card(card: CardUpdate, db: Session = Depends(get_db),
+                      current_user: str = Depends(get_current_user)):
     query = db.query(CardModel).filter(CardModel.id == card.id)
     # TODO: Descomentar para implementar sistema de errores
     # updated_card = query.first()
