@@ -22,7 +22,8 @@ async def get_all_projects(db: Session = Depends(get_db),
 
 
 @router.get("/{id}", response_model=ProjectResponse)
-async def get_one_project(id: int, db: Session = Depends(get_db)):
+async def get_one_project(id: int, db: Session = Depends(get_db),
+                          current_user: str = Depends(get_current_user)):
     project = db.query(ProjectModel).filter(ProjectModel.id == id).first()
 
     return project
