@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy.sql import func
 from app.dependencies.database import Base
 
 
@@ -9,3 +10,4 @@ class UserModel(Base):
     username = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
+    created_at = Column(Date, nullable=False, server_default=func.current_date())
