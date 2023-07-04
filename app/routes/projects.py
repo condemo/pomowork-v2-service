@@ -16,7 +16,9 @@ router = APIRouter(
 @router.get("/", response_model=list[ProjectResponse])
 async def get_all_projects(db: Session = Depends(get_db),
                            current_user: int = Depends(get_current_user)):
-    projects_list = db.query(ProjectModel).all()
+    projects_list = db.query(ProjectModel).filter(
+        ProjectModel.owner_id == current_user.id
+    ).all()
 
     return projects_list
 
@@ -57,6 +59,18 @@ async def create_project(project: ProjectCreate,
 async def delete_project(id: int, db: Session = Depends(get_db),
                          current_user: int = Depends(get_current_user)):
     query = db.query(ProjectModel).filter(ProjectModel.id == id)
+    project = query.first()
+
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The project with id {id} is not found"
+        )
+    if project.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not Authorize to perform requested action",
+        )
 
     query.delete(synchronize_session=False)
     db.commit()
@@ -68,8 +82,18 @@ async def delete_project(id: int, db: Session = Depends(get_db),
 async def update_project(project: ProjectUpdate, db: Session = Depends(get_db),
                          current_user: int = Depends(get_current_user)):
     query = db.query(ProjectModel).filter(ProjectModel.id == project.id)
-    # TODO: Descomentar para gestionar errores
-    # project_updated = query.first()
+    project_updated = query.first()
+
+    if not project_updated:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The project with id {project.id} is not found"
+        )
+    if project_updated.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not Authorize to perform requested action",
+        )
 
     query.update(project.dict(), synchronize_session=False)
     db.commit()
