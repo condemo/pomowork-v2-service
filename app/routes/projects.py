@@ -1,6 +1,6 @@
 from app.dependencies.oauth2 import get_current_user
 from app.schemas.projects import ProjectUpdate
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from app.dependencies.database import get_db
@@ -26,6 +26,17 @@ async def get_one_project(id: int, db: Session = Depends(get_db),
                           current_user: int = Depends(get_current_user)):
     project = db.query(ProjectModel).filter(ProjectModel.id == id).first()
 
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The project with id {id} is not found",
+        )
+    if project.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not Authorize to perform requested action",
+        )
+
     return project
 
 
@@ -34,7 +45,7 @@ async def get_one_project(id: int, db: Session = Depends(get_db),
 async def create_project(project: ProjectCreate,
                          db: Session = Depends(get_db),
                          current_user: int = Depends(get_current_user)):
-    new_project = ProjectModel(**project.dict())
+    new_project = ProjectModel(**project.dict(), owner_id=current_user.id)
     db.add(new_project)
     db.commit()
     db.refresh(new_project)
