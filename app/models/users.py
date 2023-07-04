@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Date
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 from app.dependencies.database import Base
 
 
@@ -11,3 +12,5 @@ class UserModel(Base):
     password = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     created_at = Column(Date, nullable=False, server_default=func.current_date())
+
+    projects = relationship("ProjectModel", back_populates="projects")
