@@ -13,4 +13,4 @@ class UserModel(Base):
     email = Column(String, nullable=False, unique=True)
     created_at = Column(Date, nullable=False, server_default=func.current_date())
 
-    projects = relationship("ProjectModel", back_populates="projects")
+    projects = relationship("ProjectModel")
