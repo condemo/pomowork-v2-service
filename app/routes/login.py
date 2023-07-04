@@ -31,7 +31,7 @@ async def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
             detail="Invalid Credentials",
         )
 
-    access_token = create_access_token(data={"username": user.username})
+    access_token = create_access_token(data={"user_id": user.id})
 
     return {
         "access_token": access_token,

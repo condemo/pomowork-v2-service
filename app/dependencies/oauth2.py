@@ -32,12 +32,13 @@ def create_access_token(data: dict) -> str:
 def verify_access_token(token: str, credentials_exception: dict):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("sub")
+        id: str = payload.get("user_id")
+        print(id)
 
-        if username is None:
+        if id is None:
             raise credentials_exception
 
-        token_data = TokenData(username=username)
+        token_data = TokenData(id=id)
 
     except JWSError:
         raise credentials_exception
@@ -45,7 +46,7 @@ def verify_access_token(token: str, credentials_exception: dict):
     return token_data
 
 
-def get_current_user(token: str = Depends(oauth_scheme), db: Session = Depends(get_db)):
+def get_current_user(token: int = Depends(oauth_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -53,6 +54,6 @@ def get_current_user(token: str = Depends(oauth_scheme), db: Session = Depends(g
     )
     token = verify_access_token(token, credentials_exception)
 
-    user = db.query(UserModel).filter(UserModel.username == token.username).first()
+    user = db.query(UserModel).filter(UserModel.id == token.id).first()
 
     return user
