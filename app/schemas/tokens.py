@@ -3,9 +3,9 @@ from typing import Optional
 
 
 class Token(BaseModel):
-    access_token: str
-    token_type: str
+    access_token: int
+    token_type: int
 
 
 class TokenData(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = None

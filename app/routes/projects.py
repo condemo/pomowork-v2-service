@@ -15,7 +15,7 @@ router = APIRouter(
 
 @router.get("/", response_model=list[ProjectResponse])
 async def get_all_projects(db: Session = Depends(get_db),
-                           current_user: str = Depends(get_current_user)):
+                           current_user: int = Depends(get_current_user)):
     projects_list = db.query(ProjectModel).all()
 
     return projects_list
@@ -23,7 +23,7 @@ async def get_all_projects(db: Session = Depends(get_db),
 
 @router.get("/{id}", response_model=ProjectResponse)
 async def get_one_project(id: int, db: Session = Depends(get_db),
-                          current_user: str = Depends(get_current_user)):
+                          current_user: int = Depends(get_current_user)):
     project = db.query(ProjectModel).filter(ProjectModel.id == id).first()
 
     return project
@@ -33,7 +33,7 @@ async def get_one_project(id: int, db: Session = Depends(get_db),
              response_model=ProjectResponse)
 async def create_project(project: ProjectCreate,
                          db: Session = Depends(get_db),
-                         current_user: str = Depends(get_current_user)):
+                         current_user: int = Depends(get_current_user)):
     new_project = ProjectModel(**project.dict())
     db.add(new_project)
     db.commit()
@@ -44,7 +44,7 @@ async def create_project(project: ProjectCreate,
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_project(id: int, db: Session = Depends(get_db),
-                         current_user: str = Depends(get_current_user)):
+                         current_user: int = Depends(get_current_user)):
     query = db.query(ProjectModel).filter(ProjectModel.id == id)
 
     query.delete(synchronize_session=False)
@@ -55,7 +55,7 @@ async def delete_project(id: int, db: Session = Depends(get_db),
 
 @router.put("/", response_model=ProjectResponse)
 async def update_project(project: ProjectUpdate, db: Session = Depends(get_db),
-                         current_user: str = Depends(get_current_user)):
+                         current_user: int = Depends(get_current_user)):
     query = db.query(ProjectModel).filter(ProjectModel.id == project.id)
     # TODO: Descomentar para gestionar errores
     # project_updated = query.first()
