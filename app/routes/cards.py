@@ -70,9 +70,19 @@ async def create_card(card: CardCreate, db: Session = Depends(get_db),
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_card(id: int, db: Session = Depends(get_db),
                       current_user: str = Depends(get_current_user)):
+    project = db.query(ProjectModel).join(
+        CardModel, CardModel.id == id
+    ).filter(ProjectModel.owner_id == current_user.id).first()
+    print(project.id)
+
     query = db.query(CardModel).filter(CardModel.id == id)
-    # TODO: Descomentar para implementar sistema de errores
-    # card = query.first()
+    card = query.first()
+
+    if not card:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The card with id {id} is not found"
+        )
 
     query.delete(synchronize_session=False)
     db.commit()
@@ -81,11 +91,16 @@ async def delete_card(id: int, db: Session = Depends(get_db),
 
 
 @router.put("/", response_model=CardResponse)
-async def update_card(card: CardUpdate, db: Session = Depends(get_db),
+async def update_card(updated_card: CardUpdate, db: Session = Depends(get_db),
                       current_user: str = Depends(get_current_user)):
-    query = db.query(CardModel).filter(CardModel.id == card.id)
-    # TODO: Descomentar para implementar sistema de errores
-    # updated_card = query.first()
+    query = db.query(CardModel).filter(CardModel.id == updated_card.id)
+    card = query.first()
+
+    if not card:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The card with id {updated_card.id} is not found"
+        )
 
     query.update(card.dict(), synchronize_session=False)
     db.commit()
