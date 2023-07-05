@@ -47,6 +47,18 @@ async def get_project_card(projectid: int, db: Session = Depends(get_db),
 @router.post("/", response_model=CardResponse)
 async def create_card(card: CardCreate, db: Session = Depends(get_db),
                       current_user: str = Depends(get_current_user)):
+    project = db.query(ProjectModel).filter(ProjectModel.id == card.project_id).first()
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The project with id {card.project_id} is not found ",
+        )
+    if project.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not Authorize to perform requested action",
+        )
+
     new_card = CardModel(**card.dict())
     db.add(new_card)
     db.commit()
