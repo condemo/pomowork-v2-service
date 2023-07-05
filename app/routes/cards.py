@@ -70,10 +70,6 @@ async def create_card(card: CardCreate, db: Session = Depends(get_db),
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_card(id: int, db: Session = Depends(get_db),
                       current_user: str = Depends(get_current_user)):
-    project = db.query(ProjectModel).join(
-        CardModel, CardModel.id == id
-    ).filter(ProjectModel.owner_id == current_user.id).first()
-    print(project.id)
 
     query = db.query(CardModel).filter(CardModel.id == id)
     card = query.first()
