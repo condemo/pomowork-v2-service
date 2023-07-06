@@ -67,13 +67,24 @@ async def create_card(card: CardCreate, db: Session = Depends(get_db),
     return new_card
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_card(id: int, db: Session = Depends(get_db),
+@router.delete("/{project_id}/{id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_card(project_id: int, id: int, db: Session = Depends(get_db),
                       current_user: str = Depends(get_current_user)):
+    project = db.query(ProjectModel).filter(ProjectModel.id == project_id).first()
 
     query = db.query(CardModel).filter(CardModel.id == id)
     card = query.first()
 
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The project with id {project_id} is not found",
+        )
+    if project.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not Authorize to perform requested action",
+        )
     if not card:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -86,12 +97,25 @@ async def delete_card(id: int, db: Session = Depends(get_db),
     return
 
 
-@router.put("/", response_model=CardResponse)
-async def update_card(updated_card: CardUpdate, db: Session = Depends(get_db),
+@router.put("/{project_id}/{id}", response_model=CardResponse)
+async def update_card(project_id: int, id: int,
+                      updated_card: CardUpdate, db: Session = Depends(get_db),
                       current_user: str = Depends(get_current_user)):
+    project = db.query(ProjectModel).filter(ProjectModel.id == project_id).first()
+
     query = db.query(CardModel).filter(CardModel.id == updated_card.id)
     card = query.first()
 
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The project with id {project_id} is not found",
+        )
+    if project.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not Authorize to perform requested action",
+        )
     if not card:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
