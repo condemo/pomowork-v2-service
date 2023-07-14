@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from jose import jwt, JWSError
+from jose import jwt, JWSError, ExpiredSignatureError
 
 from datetime import datetime, timedelta
 
@@ -41,6 +41,13 @@ def verify_access_token(token: str, credentials_exception: dict):
 
     except JWSError:
         raise credentials_exception
+
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_410_GONE,
+            detail="Token has expired",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
 
     return token_data
 
