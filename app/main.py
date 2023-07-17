@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes import cards, projects, users, login
+from app.dependencies.oauth2 import get_current_user
 
 
 app = FastAPI(
@@ -38,5 +39,5 @@ app.include_router(login.router)
 
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
+async def root(current_user: int = Depends(get_current_user)):
+    return {"message": "OK"}
