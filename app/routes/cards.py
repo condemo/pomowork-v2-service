@@ -44,7 +44,7 @@ async def get_project_card(projectid: int, db: Session = Depends(get_db),
     return card_list
 
 
-@router.post("/", response_model=CardResponse)
+@router.post("/", response_model=CardResponse, status_code=status.HTTP_201_CREATED)
 async def create_card(card: CardCreate, db: Session = Depends(get_db),
                       current_user: str = Depends(get_current_user)):
     project = db.query(ProjectModel).filter(ProjectModel.id == card.project_id).first()
