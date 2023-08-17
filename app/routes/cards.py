@@ -122,7 +122,7 @@ async def update_card(project_id: int, id: int,
             detail=f"The card with id {updated_card.id} is not found"
         )
 
-    query.update(card.dict(), synchronize_session=False)
+    query.update(updated_card.dict(), synchronize_session=False)
     db.commit()
 
     return query.first()
