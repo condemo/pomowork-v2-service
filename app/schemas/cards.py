@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel
 from typing import Optional
 from datetime import date
 
@@ -24,6 +24,4 @@ class CardUpdate(BaseModel):
 class CardResponse(CardCreate):
     id: int
     created_at: date
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

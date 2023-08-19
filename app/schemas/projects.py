@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel
 from typing import Optional
 
 from app.schemas.cards import CardResponse
@@ -23,6 +23,4 @@ class ProjectUpdate(ProjectBase):
 class ProjectResponse(ProjectBase):
     id: int
     cards: list[CardResponse]
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
