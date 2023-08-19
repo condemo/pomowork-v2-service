@@ -6,10 +6,10 @@ from app.schemas.cards import CardResponse
 
 class ProjectBase(BaseModel):
     name: str
-    salary_collected: Optional[float] = None
-    pending_salary: Optional[float] = None
-    total_money: Optional[float] = None
-    price_per_hour: Optional[float] = None
+    salary_collected: Optional[float] = 0
+    pending_salary: Optional[float] = 0
+    total_money: Optional[float] = 0
+    price_per_hour: Optional[float] = 0
 
 
 class ProjectCreate(ProjectBase):
