@@ -37,8 +37,6 @@ async def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
 
     access_token = create_access_token(data={"user_id": user.id})
     refresh_token = create_refresh_token(data={"username": user.username})
-    print(f"Refresh token: {refresh_token}")
-    print(f"access_token token: {access_token}")
 
     return {
         "access_token": access_token,
