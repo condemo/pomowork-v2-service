@@ -16,8 +16,8 @@ oauth_refresh = OAuth2PasswordBearer(tokenUrl="login/refresh")
 
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
-ACCESS_TOKEN_MINUTES = settings.access_token_expire_minutes
-REFRESH_TOKEN_MINUTES = settings.refresh_token_expire_minutes
+ACCESS_TOKEN_DAYS = settings.access_token_expire_days
+REFRESH_TOKEN_DAYS = settings.refresh_token_expire_days
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -28,7 +28,7 @@ credentials_exception = HTTPException(
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_MINUTES)
+    expire = datetime.utcnow() + timedelta(days=ACCESS_TOKEN_DAYS)
 
     to_encode.update({"exp": expire})
 
@@ -39,7 +39,7 @@ def create_access_token(data: dict) -> str:
 
 def create_refresh_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=REFRESH_TOKEN_MINUTES)
+    expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_DAYS)
 
     to_encode.update({"exp": expire})
 
