@@ -29,7 +29,7 @@ async def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
             detail="Invalid Credentials",
         )
 
-    if not password_verify(user_credentials.username, user.password):
+    if not password_verify(user_credentials.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Invalid Credentials",
