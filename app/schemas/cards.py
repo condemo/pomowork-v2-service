@@ -9,6 +9,7 @@ class CardCreate(BaseModel):
     price_per_hour: Optional[float] = 0
     total_price: Optional[float] = 0
     collected: Optional[bool] = False
+    created_at: date
 
 
 class CardUpdate(BaseModel):
@@ -23,5 +24,4 @@ class CardUpdate(BaseModel):
 
 class CardResponse(CardCreate):
     id: int
-    created_at: date
     model_config = ConfigDict(from_attributes=True)

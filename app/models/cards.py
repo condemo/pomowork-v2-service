@@ -1,6 +1,5 @@
 from app.dependencies.database import Base
 from sqlalchemy import Boolean, Date, Integer, Column, Float, ForeignKey
-from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
 
@@ -13,6 +12,6 @@ class CardModel(Base):
     price_per_hour = Column(Float, nullable=True)
     total_price = Column(Float, nullable=True)
     collected = Column(Boolean, nullable=False)
-    created_at = Column(Date, nullable=False, server_default=func.current_date())
+    created_at = Column(Date, nullable=False)
 
     project = relationship("ProjectModel", back_populates="cards")
